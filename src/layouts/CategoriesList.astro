@@ -1,22 +1,18 @@
 ---
-import '../styles/main.scss';
-import { Lang } from '@i18n/types';
-import styles from '../styles/wallpaper.module.scss';
 import '../styles/layouts/categoriesList.scss';
 import { Category } from 'utils/blog';
-import type { Props as BaseHeadProps } from '@components/BaseHead.astro';
 import { getCanonicalURL, navbarLinks } from 'utils/routing';
 import { changeLanguage } from 'i18next';
 import { SocialLinksList } from '@components/SocialLinksList/SocialLinksList';
-import { BuildInfo } from '@components/BuildInfo/BuildInfo';
 import { SlantedHeader } from '@components/SlantedHeader/SlantedHeader';
 import { Navbar } from '@components/Navbar/Navbar';
-import BaseHead from '@components/BaseHead.astro';
 import { CategoriesList } from '@components/CategoriesList/CategoriesList';
 import { getNavbarMessages } from '@components/Navbar/helpers';
+import HtmlDocument, {
+  type Props as HtmlDocumentProps,
+} from '@components/HtmlDocument.astro';
 
-export interface Props extends BaseHeadProps {
-  lang: Lang;
+export interface Props extends HtmlDocumentProps {
   categories: Category[];
 }
 
@@ -32,37 +28,28 @@ const relativePageUrl =
 changeLanguage(lang);
 ---
 
-<html lang={lang} class="rmjs-yellow-black-theme">
-  <head>
-    <BaseHead title={title} description={description} />
-    <slot name="head" />
-  </head>
-
-  <body class={styles.wallpaper}>
-    <article class="main">
-      <Navbar
-        client:load
-        lang={lang}
-        urlMap={null}
-        relativePageUrl={relativePageUrl}
-        messages={getNavbarMessages()}
+<HtmlDocument lang={lang} title={title} description={description}>
+  <article class="main">
+    <Navbar
+      client:load
+      lang={lang}
+      urlMap={null}
+      relativePageUrl={relativePageUrl}
+      messages={getNavbarMessages()}
+    />
+    <SlantedHeader
+      title={title}
+      logoHref={navbarLinks[lang]?.home}
+      logoLabel={'homepage'}
+    />
+    <div class="main-content categories-list-layout">
+      <CategoriesList
+        class="categories-list"
+        categories={categories.map((r) => r.name)}
+        baseUrl={import.meta.env.BASE_URL}
       />
-      <SlantedHeader
-        title={title}
-        logoHref={navbarLinks[lang]?.home}
-        logoLabel={'homepage'}
-      />
-      <div class="main-content categories-list-layout">
-        <CategoriesList
-          class="categories-list"
-          categories={categories.map((r) => r.name)}
-          baseUrl={import.meta.env.BASE_URL}
-        />
-        <slot />
-      </div>
-      <footer><SocialLinksList /></footer>
-    </article>
-    <slot name="after" />
-    <BuildInfo />
-  </body>
-</html>
+      <slot />
+    </div>
+    <footer><SocialLinksList /></footer>
+  </article>
+</HtmlDocument>

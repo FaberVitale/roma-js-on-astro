@@ -1,14 +1,8 @@
 ---
-import '../styles/main.scss';
-import styles from '../styles/wallpaper.module.scss';
-import BaseHead from '@components/BaseHead.astro';
-import { BuildInfo } from '@components/BuildInfo/BuildInfo';
 import { Navbar } from '@components/Navbar/Navbar';
 import { changeLanguage } from 'i18next';
 import { getCanonicalURL, categoryPageUrl, navbarLinks } from 'utils/routing';
-import type { Props as BaseHeadProps } from '@components/BaseHead.astro';
 import { SocialLinksList } from '@components/SocialLinksList/SocialLinksList';
-import { Lang } from '@i18n/types';
 import { SlantedHeader } from '@components/SlantedHeader/SlantedHeader';
 import { CategoriesList } from '@components/CategoriesList/CategoriesList';
 import { MarkdownInstance } from 'astro';
@@ -16,9 +10,11 @@ import { Category, Frontmatter } from 'utils/blog';
 import { BlogPostCard } from '@components/BlogPostCard/BlogPostCard';
 import { l10n } from '@i18n/config';
 import { getNavbarMessages } from '@components/Navbar/helpers';
+import HtmlDocument, {
+  type Props as HtmlDocumentProps,
+} from '@components/HtmlDocument.astro';
 
-export interface Props extends BaseHeadProps {
-  lang: Lang;
+export interface Props extends HtmlDocumentProps {
   posts: MarkdownInstance<Frontmatter>[];
   categories: Category[];
 }
@@ -43,52 +39,43 @@ const topCategoriesNames = categories.map(({ name }) => name).slice(0, 15);
 changeLanguage(lang);
 ---
 
-<html lang={lang} class="rmjs-yellow-black-theme">
-  <head>
-    <BaseHead title={title} description={description} />
-    <slot name="head" />
-  </head>
-
-  <body class={styles.wallpaper}>
-    <article class="main">
-      <Navbar
-        client:load
-        lang={lang}
-        urlMap={null}
-        relativePageUrl={relativePageUrl}
-        messages={getNavbarMessages()}
-      />
-      <SlantedHeader
-        title={title}
-        logoHref={navbarLinks[lang]?.home}
-        logoLabel={'homepage'}
-      />
-      <div class="main-content blog-list-layout">
-        <ul class="list-style-none m-0 post-list">
-          {
-            posts.map((post) => (
-              <li class="list-style-none m-0 p-0 d-contents">
-                <BlogPostCard post={post} />
-              </li>
-            ))
-          }
-        </ul>
-        <aside class="aside text-center">
-          <h2 class="h-2 m-0">{l10n('topCategoriesTitle')}</h2>
-          <CategoriesList
-            class="categories-list"
-            baseUrl={import.meta.env.BASE_URL}
-            categories={topCategoriesNames}
-          />
-          <a class="btn btn-primary" href={categoryPageUrl}
-            >{l10n('showAllTags')}
-          </a>
-        </aside>
-        <slot />
-      </div>
-      <footer><SocialLinksList /></footer>
-    </article>
-    <slot name="after" />
-    <BuildInfo />
-  </body>
-</html>
+<HtmlDocument lang={lang} title={title} description={description}>
+  <article class="main">
+    <Navbar
+      client:load
+      lang={lang}
+      urlMap={null}
+      relativePageUrl={relativePageUrl}
+      messages={getNavbarMessages()}
+    />
+    <SlantedHeader
+      title={title}
+      logoHref={navbarLinks[lang]?.home}
+      logoLabel={'homepage'}
+    />
+    <div class="main-content blog-list-layout">
+      <ul class="list-style-none m-0 post-list">
+        {
+          posts.map((post) => (
+            <li class="list-style-none m-0 p-0 d-contents">
+              <BlogPostCard post={post} />
+            </li>
+          ))
+        }
+      </ul>
+      <aside class="aside text-center">
+        <h2 class="h-2 m-0">{l10n('topCategoriesTitle')}</h2>
+        <CategoriesList
+          class="categories-list"
+          baseUrl={import.meta.env.BASE_URL}
+          categories={topCategoriesNames}
+        />
+        <a class="btn btn-primary" href={categoryPageUrl}
+          >{l10n('showAllTags')}
+        </a>
+      </aside>
+      <slot />
+    </div>
+    <footer><SocialLinksList /></footer>
+  </article>
+</HtmlDocument>

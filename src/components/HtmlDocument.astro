@@ -1,0 +1,29 @@
+---
+import '../styles/main.scss';
+import styles from '../styles/wallpaper.module.scss';
+import BaseHead from '@components/BaseHead.astro';
+import { BuildInfo } from '@components/BuildInfo/BuildInfo';
+import type { Props as BaseHeadProps } from '@components/BaseHead.astro';
+import { changeLanguage } from 'i18next';
+import { Lang } from '@i18n/types';
+
+export interface Props extends BaseHeadProps {
+  lang: Lang;
+}
+
+const { title, description, lang = 'en' } = Astro.props as Props;
+
+changeLanguage(lang);
+---
+
+<html lang={lang} class="rmjs-yellow-black-theme">
+  <head>
+    <BaseHead title={title} description={description} />
+    <slot name="head" />
+  </head>
+  <body class={styles.wallpaper}>
+    <slot />
+    <slot name="after" />
+    <BuildInfo />
+  </body>
+</html>

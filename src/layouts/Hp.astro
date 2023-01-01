@@ -1,11 +1,6 @@
 ---
-import '../styles/main.scss';
-import styles from '../styles/wallpaper.module.scss';
 import '../styles/layouts/hp.scss';
-import BaseHead from '@components/BaseHead.astro';
 import { BrandLogo } from '@components/BrandLogo/BrandLogo';
-import { BuildInfo } from '@components/BuildInfo/BuildInfo';
-import type { Props as BaseHeadProps } from '@components/BaseHead.astro';
 import { Navbar } from '@components/Navbar/Navbar';
 import { changeLanguage } from 'i18next';
 import { Lang } from '@i18n/types';
@@ -14,9 +9,11 @@ import { getNavbarMessages } from '@components/Navbar/helpers';
 import { SocialLinksList } from '@components/SocialLinksList/SocialLinksList';
 import { l10n } from '@i18n/config';
 import type { HpContent } from '../@types/hp';
+import HtmlDocument, {
+  type Props as HtmlDocumentProps,
+} from '@components/HtmlDocument.astro';
 
-export interface Props extends BaseHeadProps {
-  lang: Lang;
+export interface Props extends HtmlDocumentProps {
   urlMap?: Partial<Record<Lang, string>>;
   sections: HpContent['sections'];
 }
@@ -39,72 +36,63 @@ const relativePageUrl =
 changeLanguage(lang);
 ---
 
-<html lang={lang} class="rmjs-yellow-black-theme">
-  <head>
-    <BaseHead title={title} description={description} />
-    <slot name="head" />
-  </head>
-
-  <body class={styles.wallpaper}>
-    <main class="main">
-      <Navbar
-        client:load
-        lang={lang}
-        urlMap={urlMap}
-        relativePageUrl={relativePageUrl}
-        messages={getNavbarMessages()}
-      />
-      <div class="hp-wrapper">
-        <section class="hp-section logo-hero">
-          <BrandLogo class="logo" />
-          <div class="logo-hero__text hero">
-            <h1 class="h-1">{title}</h1><span class="h-1">{description}</span>
-          </div>
-          <a
-            class="btn btn-secondary slack-link h-1"
-            rel="noopener noreferrer"
-            target="_blank"
-            href={socialLinks.slack.href}
-          >
-            {l10n('ctaJoinSlackCta')}{' '}
-            <img
-              width="24"
-              height="24"
-              src={socialLinks.slack.iconHref}
-              alt={'slack'}
-              aria-hidden="true"
-            />
-          </a>
-        </section>
-        {
-          sections.map((section) => (
-            <section class="arrow-box hp-section">
-              <h2 class="h-2 h-dynamic">{section.heading}</h2>
-              <p class="h-2 h-dynamic">{section.body}</p>
-              {!!section.cta && (
-                <a
-                  class="btn btn-outline btn-tertiary"
-                  href={section.cta.href}
-                  hreflang={section.cta.lang || undefined}
-                >
-                  {section.cta.text}
-                </a>
-              )}
-            </section>
-          ))
-        }
-      </div>
-      <slot />
-      <section class="contacts-cta">
-        <p class="h-2">{l10n('ctaRequestTalk')}</p>
-        <p class="h-2">{l10n('ctaSeePreviousTalks')}</p>
-        <h2 class="h-1">{l10n('ctaContacts')}</h2>
+<HtmlDocument lang={lang} title={title} description={description}>
+  <main class="main">
+    <Navbar
+      client:load
+      lang={lang}
+      urlMap={urlMap}
+      relativePageUrl={relativePageUrl}
+      messages={getNavbarMessages()}
+    />
+    <div class="hp-wrapper">
+      <section class="hp-section logo-hero">
+        <BrandLogo class="logo" />
+        <div class="logo-hero__text hero">
+          <h1 class="h-1">{title}</h1><span class="h-1">{description}</span>
+        </div>
+        <a
+          class="btn btn-secondary slack-link h-1"
+          rel="noopener noreferrer"
+          target="_blank"
+          href={socialLinks.slack.href}
+        >
+          {l10n('ctaJoinSlackCta')}{' '}
+          <img
+            width="24"
+            height="24"
+            src={socialLinks.slack.iconHref}
+            alt={'slack'}
+            aria-hidden="true"
+          />
+        </a>
       </section>
-      <footer>
-        <SocialLinksList />
-      </footer>
-    </main>
-    <slot name="after" />
-    <BuildInfo />
-  </body>
-</html>
+      {
+        sections.map((section) => (
+          <section class="arrow-box hp-section">
+            <h2 class="h-2 h-dynamic">{section.heading}</h2>
+            <p class="h-2 h-dynamic">{section.body}</p>
+            {!!section.cta && (
+              <a
+                class="btn btn-outline btn-tertiary"
+                href={section.cta.href}
+                hreflang={section.cta.lang || undefined}
+              >
+                {section.cta.text}
+              </a>
+            )}
+          </section>
+        ))
+      }
+    </div>
+    <slot />
+    <section class="contacts-cta">
+      <p class="h-2">{l10n('ctaRequestTalk')}</p>
+      <p class="h-2">{l10n('ctaSeePreviousTalks')}</p>
+      <h2 class="h-1">{l10n('ctaContacts')}</h2>
+    </section>
+    <footer>
+      <SocialLinksList />
+    </footer>
+  </main>
+</HtmlDocument>
