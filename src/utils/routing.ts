@@ -11,10 +11,12 @@ export const navbarLinks: Readonly<Record<Lang, Record<string, string>>> = {
   it: {
     home: import.meta.env.PUBLIC_URL_BASE + '/',
     blog: import.meta.env.PUBLIC_URL_BASE + '/blog',
+    media: import.meta.env.PUBLIC_URL_BASE + '/it/media',
     about: import.meta.env.PUBLIC_URL_BASE + '/it/about',
   },
   en: {
     home: import.meta.env.PUBLIC_URL_BASE + '/en',
+    media: import.meta.env.PUBLIC_URL_BASE + '/en/media',
     about: import.meta.env.PUBLIC_URL_BASE + '/en/about',
   },
 };
@@ -29,6 +31,11 @@ export const hpUrlMap: Readonly<Record<Lang, string>> = {
 export const aboutUrlMap: Readonly<Record<Lang, string>> = {
   it: navbarLinks.it.about,
   en: navbarLinks.en.about,
+};
+
+export const mediaUrlMap: Readonly<Record<Lang, string>> = {
+  it: navbarLinks.it.media,
+  en: navbarLinks.en.media,
 };
 
 export function preventSelfNavigation(

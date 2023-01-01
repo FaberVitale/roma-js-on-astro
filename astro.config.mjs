@@ -4,6 +4,7 @@ import solid from '@astrojs/solid-js';
 import { env } from 'process';
 import sitemap from '@astrojs/sitemap';
 import astroI18next from 'astro-i18next';
+import image from '@astrojs/image';
 
 function enhanceEnvVariables() {
   if (!env.PUBLIC_BUILD_DATE) {
@@ -24,7 +25,6 @@ function enhanceEnvVariables() {
     env.PUBLIC_SITE_URL = 'https://romajs.org';
   }
 }
-
 /**
  * @type {(publicUrl: string) => { base: string, site: string | undefined }}
  */
@@ -40,11 +40,8 @@ function computeBaseAndSite(publicUrl) {
     siteFullURLWithPath.hash =
     siteFullURLWithPath.search =
       '';
-
   const site = siteFullURLWithPath.href;
-
   env.PUBLIC_URL_BASE = base;
-
   return {
     site,
     base,
@@ -61,13 +58,16 @@ export default defineConfig({
     astroI18next(),
     sitemap({
       i18n: {
-        defaultLocale: 'it', // All urls that don't contain `es` or `fr` after `https://stargazers.club/` will be treated as default locale, i.e. `en`
+        defaultLocale: 'it',
+        // All urls that don't contain `es` or `fr` after `https://stargazers.club/` will be treated as default locale, i.e. `en`
         locales: {
-          en: 'en-US', // The `defaultLocale` value must present in `locales` keys
+          en: 'en-US',
+          // The `defaultLocale` value must present in `locales` keys
           it: 'it-IT',
         },
       },
     }),
+    image(),
   ],
   base: base || undefined,
   site,

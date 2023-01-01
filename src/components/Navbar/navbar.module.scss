@@ -138,6 +138,10 @@
     animation-delay: 380ms;
   }
 
+  .menuItem:nth-child(4) {
+    animation-delay: 420ms;
+  }
+
   a:global(.btn.btn-small) {
     font-size: 16px;
   }
@@ -180,7 +184,7 @@
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  padding: 3.65rem 0 0;
+  padding: 3.05rem 0 0;
   gap: 2.128rem;
   font-weight: 700;
 
@@ -196,11 +200,11 @@
   }
 
   li:nth-child(1) {
-    animation-delay: 400ms;
+    animation-delay: 460ms;
   }
 
   li:nth-child(2) {
-    animation-delay: 440ms;
+    animation-delay: 500ms;
   }
 }
 

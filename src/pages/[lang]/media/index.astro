@@ -1,0 +1,51 @@
+---
+import { getI18nRouteParams } from '@i18n/config';
+import type { Lang } from '@i18n/types';
+import { getCanonicalURL, mediaUrlMap } from 'utils/routing';
+import { enMediaContent } from '@pages/api/media/en.json';
+import { itMediaContent } from '@pages/api/media/it.json';
+import MediaListLayout from '@layouts/MediaList.astro';
+
+export interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+
+export async function getStaticPaths() {
+  function getContentByLang(lang: string) {
+    switch (lang) {
+      case 'it': {
+        return itMediaContent;
+      }
+      case 'en': {
+        return enMediaContent;
+      }
+      default: {
+        throw new Error('unsupported lang received: ' + lang);
+      }
+    }
+  }
+
+  return getI18nRouteParams().map((params) => {
+    return {
+      params,
+      props: {
+        lang: params.lang,
+        ...getContentByLang(params.lang),
+      },
+    };
+  });
+}
+
+const permalink = getCanonicalURL(Astro).href;
+const { title, description, lang } = Astro.props;
+---
+
+<MediaListLayout
+  permalink={permalink}
+  lang={lang}
+  title={title}
+  urlMap={mediaUrlMap}
+  description={description}
+/>

@@ -1,0 +1,59 @@
+---
+import '../styles/main.scss';
+import { Lang } from '@i18n/types';
+import styles from '../styles/wallpaper.module.scss';
+import '../styles/layouts/categoriesList.scss';
+import { Category } from 'utils/blog';
+import type { Props as BaseHeadProps } from '@components/BaseHead.astro';
+import { getCanonicalURL, navbarLinks } from 'utils/routing';
+import { changeLanguage } from 'i18next';
+import { SocialLinksList } from '@components/SocialLinksList/SocialLinksList';
+import { BuildInfo } from '@components/BuildInfo/BuildInfo';
+import { SlantedHeader } from '@components/SlantedHeader/SlantedHeader';
+import { Navbar } from '@components/Navbar/Navbar';
+import BaseHead from '@components/BaseHead.astro';
+import { getNavbarMessages } from '@components/Navbar/helpers';
+
+export interface Props extends BaseHeadProps {
+  lang: Lang;
+  urlMap?: Partial<Record<Lang, string>>;
+}
+
+const { title, description, lang = 'en', urlMap = null } = Astro.props as Props;
+
+const canonicalURL = getCanonicalURL(Astro);
+
+const relativePageUrl =
+  canonicalURL.pathname.replace(/([^/]+)\/$/g, '$1') +
+  canonicalURL.search +
+  canonicalURL.hash;
+
+changeLanguage(lang);
+---
+
+<html lang={lang} class="rmjs-yellow-black-theme">
+  <head>
+    <BaseHead title={title} description={description} />
+    <slot name="head" />
+  </head>
+
+  <body class={styles.wallpaper}>
+    <article class="main">
+      <Navbar
+        client:load
+        lang={lang}
+        urlMap={urlMap}
+        relativePageUrl={relativePageUrl}
+        messages={getNavbarMessages()}
+      />
+      <SlantedHeader
+        title={title}
+        logoHref={navbarLinks[lang]?.home}
+        logoLabel={'homepage'}
+      />
+      <footer><SocialLinksList /></footer>
+    </article>
+    <slot name="after" />
+    <BuildInfo />
+  </body>
+</html>
