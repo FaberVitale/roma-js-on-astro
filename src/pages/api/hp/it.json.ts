@@ -20,8 +20,6 @@ export async function getHpItContent(): Promise<Readonly<HpContent>> {
   };
 }
 
-export async function get() {
-  return {
-    body: JSON.stringify(await getHpItContent()),
-  };
+export async function GET() {
+  return new Response(JSON.stringify(await getHpItContent()));
 }
