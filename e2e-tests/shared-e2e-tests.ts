@@ -212,6 +212,13 @@ export async function expectValidMeta(page: Page, lang: ExpectedLang) {
   }
 }
 
+export async function expectCanonical(page: Page, hrefValue: string | RegExp) {
+  const canonicals = await page.locator(`head > link[rel="canonical"]`).all();
+
+  expect(canonicals).toHaveLength(1);
+  await expect(canonicals[0]).toHaveAttribute('href', hrefValue);
+}
+
 export async function expectWellFormedPage(
   page: Page,
   expectedLang: ExpectedLang,
