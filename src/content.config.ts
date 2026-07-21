@@ -1,11 +1,12 @@
 // 1. Import utilities from `astro:content`
-import { defineCollection, reference, z } from 'astro:content';
+import { defineCollection, reference } from 'astro:content';
+import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
 const imgAsset = z.object({
   src: z.string().min(3),
-  width: z.number().finite().min(1),
-  height: z.number().finite().min(1),
+  width: z.number().min(1),
+  height: z.number().min(1),
   alt: z.string(),
 });
 
